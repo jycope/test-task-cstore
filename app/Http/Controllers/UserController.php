@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\UserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -25,10 +25,26 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(UserRequest $request)
+    public function store(Request $request)
     {
-        $day = User::create($request->validated());
-        return $day;
+        $validator = Validator::make($request->all(), [
+            'login' => 'required|nullable',
+            'password' => 'required|nullable',
+            'family' => 'required|nullable',
+            'name' => 'required|nullable',
+            'date_registration' => 'required|date|nullable'
+        ]);
+
+        if ($validator->fails()) {
+            return response($validator->errors());
+       } 
+
+        $user = new User();
+        $user->fill($request->all());
+        $user->save();
+
+        return $user;
+
     }
 
     /**
