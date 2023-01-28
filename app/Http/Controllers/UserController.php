@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\CreateUserJob;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -37,14 +38,14 @@ class UserController extends Controller
 
         if ($validator->fails()) {
             return response($validator->errors());
-       } 
+        }
 
         $user = new User();
-        $user->fill($request->all());
-        $user->save();
+        $data = $request->all();
 
-        return $user;
+        CreateUserJob::dispatchSync($data);
 
+        return User::all();
     }
 
     /**
