@@ -16,7 +16,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        return User::all();
+        return response()
+            ->json(User::all());
     }
 
 
@@ -39,8 +40,7 @@ class UserController extends Controller
         if ($validator->fails()) {
             return response($validator->errors());
         }
-
-        $user = new User();
+        
         $data = $request->all();
 
         CreateUserJob::dispatchSync($data);
@@ -56,7 +56,8 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        return $user = user::findOrFail($user);
+        return response()
+            ->json($user);
     }
 
     /**
